@@ -163,7 +163,7 @@ app.post('/login',async (req, res) => {
 });
 
 app.post('/create-event', async (req, res) => {
-  const { title, description, location, event_date } = req.body;
+  const { title, description, event_type ,  location, event_date } = req.body;
   if (!title || !location || !event_date) {
     return res.status(400).json({ error: 'All fields (title, location, event_date) are required.' });
   }
@@ -180,10 +180,10 @@ app.post('/create-event', async (req, res) => {
       }
 
       const insertQuery = `
-      INSERT INTO campusevent (title, description, location, event_date)
-      VALUES (?, ?, ?, ?)`;
+      INSERT INTO campusevent (title, description, location, event_date, event_type)
+      VALUES (?, ?, ?, ?, ?)`;
 
-      await db.run(insertQuery, [title, description, location, event_date]) ;
+      await db.run(insertQuery, [title, description, location, event_date, event_type]) ;
       res.status(200).json("event Created....")
   }catch(err){
     console.error("Error during creation:", err.message);
