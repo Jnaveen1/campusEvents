@@ -1,0 +1,9 @@
+.Event-Box{
+    list-style-type: none;
+    border-style: solid;
+    width: 400px;
+    padding: 20px;
+    margin: 20px;
+    text-align: left;
+}
+

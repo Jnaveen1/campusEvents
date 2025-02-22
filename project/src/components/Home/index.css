@@ -1,0 +1,10 @@
+.EventContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap
+}
+
+.main-container{
+    padding: 20px;
+}
