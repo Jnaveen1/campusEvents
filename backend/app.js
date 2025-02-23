@@ -10,7 +10,8 @@ const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer")
 const crypto = require("crypto") 
-
+const cron = require("node-cron") ;
+const axios = require("axios");
 
 const cors = require('cors');
 
@@ -49,6 +50,18 @@ const transporter = nodemailer.createTransport({
 const generateOTP = () =>{
   return crypto.randomInt(100000, 999999).toString() ;
 };
+
+cron.schedule("0 9 * * *", async()=>{
+  try{
+    console.log("Running daily event remainder task....");
+    const response = await axios("http://localhost:3000/send-event-reminders") ;
+    console.log("Response :", response.data) ;
+  }catch(error){
+    console.error("Error in sending event reminders:", error.message);
+  }
+});
+
+console.log("cron job is schedule to run at 9 AM daily");
 
 app.post("/send-otp", async (req, res) => {
   console.log("backend")
@@ -139,6 +152,7 @@ app.post("/register", async(request, response)=>{
 })
 
 app.post('/login',async (req, res) => {
+  console.log("login")
   const { email, password } = req.body;
 
   if (!email || !password ) {
@@ -180,7 +194,7 @@ app.post('/create-event', async (req, res) => {
       }
 
       const insertQuery = `
-      INSERT INTO campusevent (title, description, location, event_date, event_type)
+      INSERT INTO campusevent (title, description, location, event_date, eventType)
       VALUES (?, ?, ?, ?, ?)`;
 
       await db.run(insertQuery, [title, description, location, event_date, event_type]) ;
@@ -293,3 +307,33 @@ app.get("/registered-events", async(request, response)=>{
     response.status(500).json({ error: "Failed to register event" });
   }
 })
+
+
+//fetching and seding the mails to users who regsitered for the event,  before 24hrs 
+
+app.post("/send-event-reminders", async (request, response)=>{
+  try{
+    const users = await db.all(`
+          select event_title , email FROM EventRegistrations WHERE event_id IN(
+            SELECT event_id FROM EventRegistrations WHERE DATE(registered_at, '+1 day') = DATE('now', '+1 day') 
+          )
+      `);
+
+      if(users.length === 0){
+        return response.status(200).json({message: "No upcoming events for remainders. "});
+      }
+      for(let user of users){
+        const mailoptions = {
+          from : "naveenjanapati65@gmail.com", 
+          to : user.email, 
+          subject : "Event Remainder: " + user.event_title, 
+          text :`Hello , Your event "${user.event_title}" is happening soon!`, 
+        };
+        await transporter.sendMail(mailoptions) ;
+      }
+      return response.status(200).json({message : "Event Reminders are sent successfully!"}) ;
+  }catch(error){
+    console.error("Error sending remaiders:", error);
+    response.status(500).json({message : "Failed to send the mails. Try again."})
+  }
+});

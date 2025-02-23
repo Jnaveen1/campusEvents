@@ -37,9 +37,12 @@ const LoginForm = () => {
     };
     console.log(formData)
     try {
+      console.log("nana")
         const response = await fetch('http://localhost:3000/login', options);
         console.log(response)
+        console.log("jvn")
         if(response.ok){
+          console.log("naveen")
             const data = await response.json();
             console.log(data.token)
             Cookies.set("jwtToken", data.token)

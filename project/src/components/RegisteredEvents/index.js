@@ -38,7 +38,8 @@ const RegsiteredEvetns = (event) =>{
                             {events.map((event) => (
                                 <li
                                 key={event.id}
-                                className="p-3 border rounded-lg shadow-md bg-white"
+                                
+                                className='Event-Box'
                                 >
                                     <h1 className="text-lg font-semibold">{event.eventTitle}</h1>
                                     <p><strong>About : </strong>{event.description}</p>
