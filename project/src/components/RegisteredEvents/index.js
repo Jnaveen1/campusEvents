@@ -28,7 +28,7 @@ const RegsiteredEvetns = (event) =>{
 
 
     return(
-            <>
+            <div className='main-container'>
             <Header />
                 {events.length === 0 ? (
                     <h1>No Registered Events</h1>
@@ -50,7 +50,7 @@ const RegsiteredEvetns = (event) =>{
                         </ul>
                     </div>
                 ) }
-            </>        
+            </div>        
     )
 }
 

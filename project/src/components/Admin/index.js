@@ -1,5 +1,4 @@
 import React, {useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import EventForm from '../EventForm';
 import Event from '../Event';
@@ -8,7 +7,7 @@ import RegistrationModal from '../RegistrationModal';
 import Cookies from 'js-cookie';
 
 import './index.css'
- function Home() {
+ function Admin() {
   const token = Cookies.get('jwtToken');
   const decodedToken = jwtDecode(token);
   const userRole = decodedToken.role;
@@ -65,12 +64,41 @@ import './index.css'
   }, [filters, eventDetails]);
 
   const handleCreateEvent = () => {
-    if (userRole === 'organizer') {
+    if (userRole === 'organizer' || userRole === 'admin') {
       setAllow(true)
     } else {
       alert('Access Denied: Only organizers can create events.');
     }
   };
+
+  const approveEvent = async (eventId) =>{
+      const detalis = {
+        status : "approved"
+      }
+      const options = {
+        method : "PUT", 
+        headers : {"Content-Type" : "application/json"}, 
+        body : JSON.stringify(detalis)
+      }
+      const result = await fetch(`http://localhost:3000/${eventId}`, options)
+      if(result.ok){
+        const data =await result.json()
+        await fetchEvents()
+      }
+  }
+
+  const rejectEvent = async (eventId) =>{
+    const options = {
+      method : "DELETE", 
+      headers : {"Content-Type" : "application/json"}, 
+    }
+
+    const result = await fetch(`http://localhost:3000/reject-event/${eventId}`, options);
+    if(result.ok){
+      const data = await result.json()
+      await fetchEvents()
+    }
+  }
 
   const onRegister = async (id, data) => {
     try {
@@ -120,8 +148,27 @@ import './index.css'
   return (
     <div className='main-container'>
       <Header />
-      <h1>Welcome to the Home Page</h1>
-      {userRole === 'admin' && <Navigate to = "/admin"/>}
+      <h1>Admin Page</h1>
+      <div>
+          <h2>Pending Events</h2>
+              {eventDetails.filter(event => event.status === 'pending').length > 0 ? (
+                <ul>
+                  {eventDetails
+                    .filter(event => event.status === 'pending')
+                    .map(event => (
+                      <Event event={event} 
+                            key={event.id} 
+                            eventId={event.id} 
+                            rejectEvent = {rejectEvent} 
+                            approveEvent = {approveEvent} 
+                            registerEvent = {handleRegisterButtonClick} 
+                        />
+                    ))}
+                </ul>
+              ) : (
+                <h3>No pending events</h3>
+              )}
+            </div>
           <br/>
           <h2>All Events</h2>
           {eventDetails.length > 0 ? (
@@ -161,6 +208,8 @@ import './index.css'
                     <Event event={event} 
                           key={event.id} 
                           eventId={event.id} 
+                          rejectEvent = {rejectEvent} 
+                          approveEvent = {approveEvent} 
                           registerEvent  ={handleRegisterButtonClick} 
                           EventStatus = "YES"
                       />
@@ -174,6 +223,8 @@ import './index.css'
                   <Event event={event} 
                         key={event.id} 
                         eventId={event.id} 
+                        rejectEvent = {rejectEvent} 
+                        approveEvent = {approveEvent} 
                         registerEvent  ={handleRegisterButtonClick} 
                         EventStatus = "NO"
                     />
@@ -196,11 +247,12 @@ import './index.css'
               eventTitle= {selectedEventTitle}
               onClose={() => setShowModal(false)} 
               onRegister={onRegister}
+              role={userRole}
             />
           )}
         </div>
   );
 }
 
-export default Home;
+export default Admin;
 

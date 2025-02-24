@@ -6,7 +6,8 @@ import WelcomePage from './components/WelcomePage'
 import Home from './components/Home'
 import RegisteredEvents from './components/RegisteredEvents'
 import ProtectedRoute from './ProtectedRoute';
-
+import Admin from './components/Admin';
+import MyEvents from './components/MyEvents'
 function App() {
   return (
     <div className="App">
@@ -21,6 +22,8 @@ function App() {
               <Route path='/registeredEvents' element={<ProtectedRoute>
                 <RegisteredEvents />
               </ProtectedRoute>} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/myevents" element={<MyEvents />} />
           </Routes>
         </Router>
     </div>

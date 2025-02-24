@@ -14,6 +14,7 @@ const cron = require("node-cron") ;
 const axios = require("axios");
 
 const cors = require('cors');
+const { stat } = require("fs");
 
 app.use(cors({
     origin: 'http://localhost:3001', 
@@ -177,7 +178,7 @@ app.post('/login',async (req, res) => {
 });
 
 app.post('/create-event', async (req, res) => {
-  const { title, description, event_type ,  location, event_date } = req.body;
+  const { title, description, event_type ,  location, event_date, status, id } = req.body;
   if (!title || !location || !event_date) {
     return res.status(400).json({ error: 'All fields (title, location, event_date) are required.' });
   }
@@ -194,10 +195,10 @@ app.post('/create-event', async (req, res) => {
       }
 
       const insertQuery = `
-      INSERT INTO campusevent (title, description, location, event_date, eventType)
-      VALUES (?, ?, ?, ?, ?)`;
+      INSERT INTO campusevent (title, description, location, event_date, eventType, status, id)
+      VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-      await db.run(insertQuery, [title, description, location, event_date, event_type]) ;
+      await db.run(insertQuery, [title, description, location, event_date, event_type, status, id]) ;
       res.status(200).json("event Created....")
   }catch(err){
     console.error("Error during creation:", err.message);
@@ -295,6 +296,8 @@ app.post("/register-event/:id", async (request, response) => {
     }
 });
 
+//To get regsitered events by users 
+
 app.get("/registered-events", async(request, response)=>{
    const {email} = request.query ;
    try{
@@ -315,13 +318,14 @@ app.post("/send-event-reminders", async (request, response)=>{
   try{
     const users = await db.all(`
           select event_title , email FROM EventRegistrations WHERE event_id IN(
-            SELECT event_id FROM EventRegistrations WHERE DATE(registered_at, '+1 day') = DATE('now', '+1 day') 
+            SELECT event_id FROM EventRegistrations WHERE DATE(registered_at, '+1 day') = DATE('now', '+1 day') || (registered_at) = DATE('now')
           )
       `);
 
       if(users.length === 0){
         return response.status(200).json({message: "No upcoming events for remainders. "});
       }
+
       for(let user of users){
         const mailoptions = {
           from : "naveenjanapati65@gmail.com", 
@@ -335,5 +339,24 @@ app.post("/send-event-reminders", async (request, response)=>{
   }catch(error){
     console.error("Error sending remaiders:", error);
     response.status(500).json({message : "Failed to send the mails. Try again."})
+  }
+});
+
+app.get("/organizer-events/:id", async (req, res) => {
+  try {
+    const { id } = req.params;   
+    console.log("Organizer ID:", id);  
+
+    // Fetch multiple events using `db.all()`
+    const events = await db.all("SELECT * FROM campusevent WHERE user_id = ?", [id]);
+
+    if (!events || events.length === 0) {
+      return res.status(404).json({ message: "No events found for this organizer" });
+    }
+
+    res.json(events);
+  } catch (error) {
+    console.error("Error fetching organizer events:", error);
+    res.status(500).json({ message: "Server Error" });
   }
 });

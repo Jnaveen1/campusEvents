@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie' ;
 import './index.css'
+
 const EventForm = () => {
-
-  const [filters, setFilters] = useState({
-    loaction : '', 
-    type : '', 
-    date : '', 
-  })
-
+  const token = Cookies.get('jwtToken');
+  const decodedToken = jwtDecode(token);
+  const userRole = decodedToken.role;
+  const id = decodedToken.id ;
   const [formData, setFormData] = useState({
     eventName: '',
     eventDate: '',
@@ -40,14 +40,21 @@ const EventForm = () => {
       setError("Select Valid Date")
       return 
     }
-    
+    let status ;
+    if(userRole === 'admin'){
+      status = "approved"
+    }else{
+      status = "pending"
+    }
 
     const eventDetails = {
         title: eventName, 
         description: eventDescription,
         location: eventLocation.toLowerCase(), 
         event_type : eventType,
-        event_date: eventDate
+        event_date: eventDate, 
+        status : status,
+        id
     };
 
     console.log(eventDetails);
