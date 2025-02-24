@@ -148,9 +148,9 @@ import './index.css'
   return (
     <div className='main-container'>
       <Header />
-      <h1>Admin Page</h1>
+      <h1 className='admin-heading'>Admin Page</h1>
       <div>
-          <h2>Pending Events</h2>
+          <h2 className='pending-heading'>Pending Events</h2>
               {eventDetails.filter(event => event.status === 'pending').length > 0 ? (
                 <ul>
                   {eventDetails
@@ -197,7 +197,7 @@ import './index.css'
                   onChange={handleFilterChange}
                 />
 
-                <button type = "button" onClick={onClickResetBtn}>Reset</button>
+                <button type = "button" onClick={onClickResetBtn} className='reset-btn'>Reset</button>
 
               </div>
               <h1>Upcoming Events</h1>
@@ -239,8 +239,6 @@ import './index.css'
           ) : (
             <EventForm />
           )}
-          {/* {userRole == 'oraganizer' && <button onClick={handleCreateEvent}>Create Event</button>}
-          {isAllow && } */}
           {showModal && (
             <RegistrationModal 
               eventId={selectedEventId} 

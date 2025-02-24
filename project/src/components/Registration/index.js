@@ -81,12 +81,13 @@ const Registration = () => {
   };
 
   return (
-    <div className='reg-main-container' style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
+    <div className="app-container">
+      <div className='login-container'>
       <h2>Register</h2>
       {error && <div style={{ color: 'red' }}>{error}</div>}
       {success && <div style={{ color: 'green' }}>{success}</div>}
       
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}  className='register-form'>
         {step === 1 && (
           <>
             <label>Email:</label>
@@ -151,13 +152,14 @@ const Registration = () => {
             </select>
 
             <button type='submit' style={{ padding: '10px', width: '100%' }}>Register</button>
+            
           </>
         )}
       </form>
-
       <Link to='/login'>
-        <p>Already registered? Login</p>
+              <p>Already registered? Login</p>
       </Link>
+      </div>
     </div>
   );
 };

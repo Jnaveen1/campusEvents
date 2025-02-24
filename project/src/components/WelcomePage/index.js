@@ -1,32 +1,33 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Changed from 'useHistory' to 'useNavigate'
+import { useNavigate } from 'react-router-dom';
+import './index.css'; // Import the CSS file
 
 function App() {
-  const [isRegistering, setIsRegistering] = useState(false); // Tracks whether user is registering or logging in
-  const navigate = useNavigate(); // Using useNavigate instead of useHistory
+  const [isRegistering, setIsRegistering] = useState(false);
+  const navigate = useNavigate();
 
   const handleRegisterClick = () => {
-    setIsRegistering(true); // Show registration form
-    navigate('/register'); // Redirect to registration page
+    setIsRegistering(true);
+    navigate('/register');
   };
 
   const handleLoginClick = () => {
-    setIsRegistering(false); // Show login form
-    navigate('/login'); // Redirect to login page
+    setIsRegistering(false);
+    navigate('/login');
   };
 
   const handleAdminLoginClick = () => {
-    setIsRegistering(false); // Show login form
-    navigate('/login'); // Redirect to login page
+    setIsRegistering(false);
+    navigate('/login');
   };
 
   return (
-    <div className="App">
-      <h1>Welcome to Our App</h1>
-      <div>
-        <button onClick={handleRegisterClick}>Register</button>
-        <button onClick={handleLoginClick}>Login</button>
-        <button onClick={handleAdminLoginClick}>Admin Login</button>
+    <div className="app-container">
+      <div className="content-box">
+        <h1 className="app-title">Welcome to Our App</h1>
+          <button className="btn" onClick={handleRegisterClick}>Register</button>
+          <button className="btn" onClick={handleLoginClick}>Login</button>
+          <button className="btn admin-btn" onClick={handleAdminLoginClick}>Admin Login</button>
       </div>
     </div>
   );

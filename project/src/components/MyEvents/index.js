@@ -73,16 +73,17 @@ const MyEvents = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="my-events-container">
+    <div className="main-container">
         <Header />
-      <h2>My Events</h2>
+      <h2 className="heading">My Events</h2>
       {events.length === 0 ? <p>No events found</p> : (
-        <ul>
+        <ul className="EventContainer">
           {events.map((event) => (
-            <li key={event.id} className="event-card">
-              <strong>{event.title}</strong> <br />
-              <span>{event.location.toUpperCase()} on {event.event_date}</span> <br />
-              <span>Status: <strong>{event.status}</strong></span> <br />
+            <li key={event.id} className="Event-Box">
+              <p><strong>Title: </strong>{event.title}</p>
+              <p><strong>About: </strong>{event.description}</p>
+              <p><strong>Location: </strong>{event.location.toUpperCase()}</p>
+              <p><strong>Status: </strong>{event.status}</p>
               {event.status === "pending" && (
                 <button onClick={() => deleteEvent(event.id)}>Delete</button>
               )}

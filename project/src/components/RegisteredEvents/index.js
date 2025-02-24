@@ -31,14 +31,13 @@ const RegsiteredEvetns = (event) =>{
             <div className='main-container'>
             <Header />
                 {events.length === 0 ? (
-                    <h1>No Registered Events</h1>
+                    <h1 className='heading'>No Registered Events</h1>
                 ) : (
                     <div>
-                        <ul className="space-y-3">
+                        <ul className="EventContainer">
                             {events.map((event) => (
                                 <li
                                 key={event.id}
-                                
                                 className='Event-Box'
                                 >
                                     <h1 className="text-lg font-semibold">{event.eventTitle}</h1>

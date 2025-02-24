@@ -1,0 +1,71 @@
+/* https://images.goklassifieds.com/2023/07/Vasireddy-Venkatadri-Institute-of-Technology-Cover.jpeg */
+/* styles.css */
+
+.login-container {
+    width: 50%;
+    margin: auto;
+    padding: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    
+  }
+
+
+  .login-main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('https://images.goklassifieds.com/2023/07/Vasireddy-Venkatadri-Institute-of-Technology-Cover.jpeg') no-repeat center center/cover;
+  }
+  
+  
+  .login-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+  }
+  
+  .input-group {
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  .input-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .login-btn {
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .login-btn:hover {
+    background-color: #0056b3;
+    transform: scale(0.95);
+  }
+  

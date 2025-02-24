@@ -23,8 +23,8 @@ const Event = (props) => {
                 <>
                     {status === 'pending' && (
                         <>
-                            <button onClick={() => props.approveEvent(eventId)} type="button">Approve</button>
-                            <button onClick={() => props.rejectEvent(eventId)} type="button">Reject</button>
+                            <button onClick={() => props.approveEvent(eventId)} type="button" className='approve-btn'>Approve</button>
+                            <button onClick={() => props.rejectEvent(eventId)} type="button" className='reject-btn'>Reject</button>
                         </>
                     )}
                 </>

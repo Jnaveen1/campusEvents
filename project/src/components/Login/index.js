@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , Link} from 'react-router-dom';
 import Cookies from 'js-cookie'
+import './index.css'
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ const LoginForm = () => {
     };
     console.log(formData)
     try {
-      console.log("nana")
+        console.log("nana")
         const response = await fetch('http://localhost:3000/login', options);
         console.log(response)
         console.log("jvn")
@@ -59,12 +60,12 @@ const LoginForm = () => {
 
 
   return (
-    <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
-      <h2>Login</h2>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '10px' }}>
+    <div className='login-main-container'>
+    <div className='login-container'>
+      <h2 className='login-title'>Login</h2>
+      {error && <div className='error-message'>{error}</div>}
+      <form onSubmit={handleSubmit} className='login-form'>
+        <div className='input-group'>
           <label>Email:</label>
           <input
             type="email"
@@ -72,11 +73,11 @@ const LoginForm = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            style={{ width: '100%', padding: '8px', margin: '5px 0' }}
+            className='input-field'
           />
         </div>
 
-        <div style={{ marginBottom: '10px' }}>
+        <div className="input-group">
           <label>Password:</label>
           <input
             type="password"
@@ -85,13 +86,18 @@ const LoginForm = () => {
             onChange={handleChange}
             required
             style={{ width: '100%', padding: '8px', margin: '5px 0' }}
+            className='input-field'
           />
         </div>
 
-        <button type="submit" style={{ padding: '10px', width: '100%' }}>
+        <button type="submit" className='login-btn'>
           Login
         </button>
+        <Link to='/register'>
+        <p>Don't have Account?Register.</p>
+      </Link>
       </form>
+    </div>
     </div>
   );
 };

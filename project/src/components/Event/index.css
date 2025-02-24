@@ -1,9 +1,19 @@
 .Event-Box{
     list-style-type: none;
     border-style: solid;
-    width: 400px;
+    width: 45%;
     padding: 20px;
     margin: 20px;
     text-align: left;
+    min-height: 200px;
+    max-height: 300px;
+    border-radius: 20px;
 }
 
+.approve-btn{
+    margin-right: 20px;
+}
+
+.reject-btn{
+
+}
