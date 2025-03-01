@@ -155,7 +155,8 @@ import './index.css'
 
               <h1>Upcoming Events</h1>
               <ul className='EventContainer'>
-                {filterData.length > 0 ? (filterData
+                {filterData.some(event => event.status === 'approved' && new Date(event.event_date) > new Date()) ? 
+                  (filterData
                   .filter(event => event.status === 'approved' && new Date(event.event_date) > new Date())
                   .map(event => (
                     <Event event={event} 
@@ -170,7 +171,8 @@ import './index.css'
               </ul>
               <h1>Previous Events</h1>
               <ul className='EventContainer'>
-              {filterData.length > 0 ? filterData
+              {filterData.some(event => event.status === 'approved' && new Date(event.event_date) < new Date()) ? 
+                filterData
                 .filter(event => event.status === 'approved' && new Date(event.event_date) < new Date())
                 .map(event => (
                   <Event event={event} 

@@ -202,7 +202,8 @@ import './index.css'
               </div>
               <h1>Upcoming Events</h1>
               <ul className='EventContainer'>
-                {filterData
+                {filterData.some(event => event.status === 'approved' && new Date(event.event_date) > new Date()) > 0 ? 
+                (filterData
                   .filter(event => event.status === 'approved' && new Date(event.event_date) > new Date())
                   .map(event => (
                     <Event event={event} 
@@ -213,11 +214,13 @@ import './index.css'
                           registerEvent  ={handleRegisterButtonClick} 
                           EventStatus = "YES"
                       />
-                  ))}
+                  ))) : (
+                    <img src = "https://i.pinimg.com/736x/a1/16/72/a1167211bffbc81f616db1ef850aee2d.jpg" className='no-upcoming-events-found-image' />
+                  )}
               </ul>
               <h1>Previous Events</h1>
               <ul className='EventContainer'>
-              {filterData
+              {filterData.some(event => event.status === 'approved' && new Date(event.event_date) < new Date()) ? filterData
                 .filter(event => event.status === 'approved' && new Date(event.event_date) < new Date())
                 .map(event => (
                   <Event event={event} 
@@ -228,7 +231,9 @@ import './index.css'
                         registerEvent  ={handleRegisterButtonClick} 
                         EventStatus = "NO"
                     />
-                ))}
+                )) : (
+                  <img src = "https://tse4.mm.bing.net/th?id=OIP.z9wmZ7NSS_CaDSvoU1FVMQAAAA&pid=Api&P=0&h=180" className='no-prevoius-events-found-image' />
+                )}
             </ul>
           </>
           ) : (
