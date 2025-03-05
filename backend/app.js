@@ -64,6 +64,7 @@ cron.schedule("0 9 * * *", async()=>{
 
 console.log("cron job is schedule to run at 9 AM daily");
 
+//sending otp 
 app.post("/send-otp", async (req, res) => {
   console.log("backend")
   const { email } = req.body;
@@ -95,6 +96,7 @@ app.post("/send-otp", async (req, res) => {
   }
 });
 
+//verify the otp
 app.post("/verify-otp", async (req, res) => {
   const { email, otp } = req.body;
 
@@ -115,7 +117,7 @@ app.post("/verify-otp", async (req, res) => {
   }
 });
 
-
+//register the new users 
 app.post("/register", async(request, response)=>{
     const {name, email, password, role} = request.body 
     if (!name || !email || !password || !role || !  ['user', 'organizer'].includes(role)) {
@@ -152,6 +154,7 @@ app.post("/register", async(request, response)=>{
       }
 })
 
+// login the existed users 
 app.post('/login',async (req, res) => {
   console.log("login")
   const { email, password } = req.body;
@@ -177,8 +180,9 @@ app.post('/login',async (req, res) => {
  
 });
 
+//create the event by the organizer 
 app.post('/create-event', async (req, res) => {
-  const { title, description, event_type ,  location, event_date, status, id } = req.body;
+  const { title, description, event_type ,  location, event_date, status, userId } = req.body;
   if (!title || !location || !event_date) {
     return res.status(400).json({ error: 'All fields (title, location, event_date) are required.' });
   }
@@ -195,10 +199,10 @@ app.post('/create-event', async (req, res) => {
       }
 
       const insertQuery = `
-      INSERT INTO campusevent (title, description, location, event_date, eventType, status, id)
+      INSERT INTO campusevent (title, description, location, event_date, eventType, status, user_id)
       VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-      await db.run(insertQuery, [title, description, location, event_date, event_type, status, id]) ;
+      await db.run(insertQuery, [title, description, location, event_date, event_type, status, userId]) ;
       res.status(200).json("event Created....")
   }catch(err){
     console.error("Error during creation:", err.message);
@@ -206,6 +210,7 @@ app.post('/create-event', async (req, res) => {
   }
 });
 
+//get the all events to display on the user interface
 app.get("/events", async (request, response)=>{
   try{
     const query = `SELECT * FROM campusevent`
@@ -217,7 +222,8 @@ app.get("/events", async (request, response)=>{
   }
 })
 
-app.put("/:eventId", async (request, response) => {
+//to approve the event by the admin 
+app.put("/approve-event:eventId", async (request, response) => {
   const { eventId } = request.params; 
   const { status } = request.body;   
 
@@ -244,15 +250,17 @@ app.put("/:eventId", async (request, response) => {
   }
 });
 
-app.delete("/reject-event/:eventId", async (request, response)=>{
+// reject the event by the admin
+app.put("/reject-event/:eventId", async (request, response)=>{
   try{
-    const {eventId} = request.params 
-    const query = `DELETE campusEvent WHERE id = ?`
-    const params = [eventId]
-
+    const {eventId} = request.params ;
+    const {reason} = request.body ;
+    console.log(`The event with eventId ${eventId} is rejected with reason ${reason}`)
+    const query = `update campusevent set status = ? , rejection_reason = ? where id = ? `
+    const params = ["rejected", reason, eventId] ;
     await db.run(query, params) ;
-    response.status(200).json({message : "Rejected the Event"})
-
+    response.status(200).json({message : "The Event is rejected"})
+    console.log( "Admin rejected the event with id : " , eventId)
   }
   catch(err){
     console.error("Error during Approve:", err.message);
@@ -261,6 +269,7 @@ app.delete("/reject-event/:eventId", async (request, response)=>{
 
 })
 
+// register for the event 
 app.post("/register-event/:id", async (request, response) => {
   console.log("NANa")
   const { id } = request.params;
@@ -297,7 +306,6 @@ app.post("/register-event/:id", async (request, response) => {
 });
 
 //To get regsitered events by users 
-
 app.get("/registered-events", async(request, response)=>{
    const {email} = request.query ;
    try{
@@ -313,7 +321,6 @@ app.get("/registered-events", async(request, response)=>{
 
 
 //fetching and seding the mails to users who regsitered for the event,  before 24hrs 
-
 app.post("/send-event-reminders", async (request, response)=>{
   try{
     const users = await db.all(`
@@ -342,12 +349,12 @@ app.post("/send-event-reminders", async (request, response)=>{
   }
 });
 
+// to get the details of the evetns conducted by the organizer 
 app.get("/organizer-events/:id", async (req, res) => {
   try {
     const { id } = req.params;   
     console.log("Organizer ID:", id);  
 
-    // Fetch multiple events using `db.all()`
     const events = await db.all("SELECT * FROM campusevent WHERE user_id = ?", [id]);
 
     if (!events || events.length === 0) {
