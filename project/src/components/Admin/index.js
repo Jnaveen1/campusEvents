@@ -73,14 +73,15 @@ import './index.css'
 
   const approveEvent = async (eventId) =>{
       const detalis = {
-        status : "approved"
+        status : "approved", 
+        reason :"Provide more details about your event"
       }
       const options = {
         method : "PUT", 
         headers : {"Content-Type" : "application/json"}, 
         body : JSON.stringify(detalis)
       }
-      const result = await fetch(`http://localhost:3000/${eventId}`, options)
+      const result = await fetch(`http://localhost:3000/approve-event-${eventId}`, options)
       if(result.ok){
         const data =await result.json()
         await fetchEvents()
@@ -88,22 +89,29 @@ import './index.css'
   }
 
   const rejectEvent = async (eventId) =>{
-    const options = {
-      method : "DELETE", 
-      headers : {"Content-Type" : "application/json"}, 
+    console.log(eventId)
+    const details = {
+      reason :"Provide more details about your event"
     }
-
+    const options = {
+      method : "PUT", 
+      headers : {"Content-Type" : "application/json"}, 
+      body : JSON.stringify(details) 
+    }
+    console.log("Deleting")
     const result = await fetch(`http://localhost:3000/reject-event/${eventId}`, options);
     if(result.ok){
       const data = await result.json()
+      console.log(data)
       await fetchEvents()
     }
   }
 
   const onRegister = async (id, data) => {
+    
     try {
         const options = {
-            method: "POST",
+            method: "POST", 
             headers: {
                 "Content-Type": "application/json"
             },

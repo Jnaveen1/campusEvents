@@ -7,7 +7,7 @@ const EventForm = () => {
   const token = Cookies.get('jwtToken');
   const decodedToken = jwtDecode(token);
   const userRole = decodedToken.role;
-  const id = decodedToken.id ;
+  const userId = decodedToken.id ;
   const [formData, setFormData] = useState({
     eventName: '',
     eventDate: '',
@@ -54,7 +54,7 @@ const EventForm = () => {
         event_type : eventType,
         event_date: eventDate, 
         status : status,
-        id
+        userId
     };
 
     console.log(eventDetails);

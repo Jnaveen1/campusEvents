@@ -79,16 +79,17 @@ const MyEvents = () => {
       {events.length === 0 ? <p>No events found</p> : (
         <ul className="EventContainer">
           {events.map((event) => (
-            <li key={event.id} className="Event-Box">
+            <li key={event.id} className= {event.status == 'rejected' ? "reject-Event-Box" : "approved-Event-Box"} >
               <p><strong>Title: </strong>{event.title}</p>
               <p><strong>About: </strong>{event.description}</p>
               <p><strong>Location: </strong>{event.location.toUpperCase()}</p>
               <p><strong>Status: </strong>{event.status}</p>
+              
               {event.status === "pending" && (
                 <button onClick={() => deleteEvent(event.id)}>Delete</button>
               )}
               {event.status === "rejected" && (
-                <button onClick={() => resubmitEvent(event.id)}>Resubmit</button>
+                  <p>The Event is rejected with reason : {event.rejection_reason}</p>
               )}
             </li>
           ))}
@@ -99,3 +100,4 @@ const MyEvents = () => {
 };
 
 export default MyEvents;
+//<button onClick={() => resubmitEvent(event.id)}>Resubmit</button>
