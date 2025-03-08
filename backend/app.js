@@ -367,3 +367,28 @@ app.get("/organizer-events/:id", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+//save feedback in database 
+
+app.post('/submit-feedback', async (request, response)=>{
+  try{
+    const {eventId, rating, comment, userId} = request.body
+    console.log(eventId)
+    console.log(rating)
+    console.log(comment)
+    console.log(userId)
+    let query ;
+    query = 'select * from feedback where user_id = ? and event_id = ? ' ;
+    const checkFeddback = await db.run(query,  [userId ,eventId]);
+    if(checkFeddback != undefined){
+      return response.status(404).json({message : "Already Submitted the feedback of this event"})
+    }
+    query = `insert into feedback (event_id , user_id, rating, comment) values(?, ?, ?, ?)`
+    const params = [eventId, userId, rating, comment] ;
+    await db.run(query, params)
+    response.status(200).json({message : "Thank You!"})
+  }catch(error){
+    console.log("Internal Server error!", error)
+    response.status(500).json({message : "Internal Server"})
+  } 
+})

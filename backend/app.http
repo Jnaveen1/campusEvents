@@ -4,9 +4,19 @@ admin
     jvn123
 }
 
-organizers 
-{
-    charan@gmail.com
-    charan123
-}
-
+organizers [
+    {
+        charan@gmail.com
+        charan123
+    }
+]
+user [
+    {
+        kasarampremkumar@gmail.com
+        prem123
+    }
+    {
+        venkatanaveenkumarjanapati@gmail.com
+        naveen123
+    }
+]

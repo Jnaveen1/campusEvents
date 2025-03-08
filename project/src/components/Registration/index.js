@@ -46,7 +46,9 @@ const Registration = () => {
       });
       if (response.ok) {
         setOtpVerified(true);
+        setError('');
         setStep(3);
+        
       } else {
         setError('Invalid OTP. Please try again.');
       }
