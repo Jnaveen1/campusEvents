@@ -216,12 +216,13 @@ app.post('/login',async (req, res) => {
 
   const query = `SELECT * FROM users WHERE email = ?`;
   const user = await db.get(query , [email])
+  console.log(user)
   if(user!=undefined){
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
-    const token = jwt.sign({ id: user.id, email: user.email,  role: user.role } , 'your_secret_key', { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, email: user.email,  role: user.role, username : user.name } , 'your_secret_key', { expiresIn: '1h' });
     console.log(token)
     res.status(200).json({ message: 'Login successful', token });
   }else{
