@@ -15,6 +15,7 @@ const axios = require("axios");
 
 const cors = require('cors');
 const { stat } = require("fs");
+const { emit } = require("process");
 
 app.use(cors({
     origin: 'http://localhost:3001', 
@@ -154,15 +155,64 @@ app.post("/register", async(request, response)=>{
       }
 })
 
+//reset the passowrd
+app.post("/reset-link", async (request, response)=>{
+  const {Email} = request.body 
+  // console.log(Email)
+    try{
+    let query = 'select * from users where email = ?' ;
+    
+    const user = await db.get(query , [Email]) 
+    // console.log(user)
+    if(user === undefined){
+      return response.status(400).send({message : "Email Doesn't Exist"})
+    }
+    const token = jwt.sign({email : user.email}, 'your_secret_key', { expiresIn: '10m' })
+    // console.log(user.email)
+    const resetLink = `http://localhost:3001/reset-link?token=${token}`
+    const mailOptions = {
+      from : "naveenjanapati65@gmail.com" ,
+      to : Email, 
+      subject : 'To Reset the password', 
+      text : `Reset Password link is ${resetLink}`
+    }
+
+    await transporter.sendMail(mailOptions) ;
+    response.status(200).send({message : "Reset password is send to the email.Check once.."})
+    }
+    catch(error){
+      response.status(500).send({message : "Internal Error"})
+    }
+})
+
+//update the password 
+app.post('/update-passoword', async(request, response)=>{
+  // console.log("update api")
+  const {token, password} = request.body ;
+  try{
+    const decoded = jwt.verify(token, 'your_secret_key') ;
+    const email = decoded.email ;
+    // console.log(email)
+    // console.log(password)
+    const hashedPassword = await bcrypt.hash(password, 10) ;
+    const query = 'update users set password = ? where email = ?' ;
+    await db.run(query, [hashedPassword, email])
+    response.status(200).send({message : "password Updated successfully"}) ;
+
+  }catch(error){
+    response.status(500).send({message : "Internal Error , Please try again."}) ;
+  }
+})
+
 // login the existed users 
 app.post('/login',async (req, res) => {
-  console.log("login")
+  // console.log("login")
   const { email, password } = req.body;
 
   if (!email || !password ) {
     return res.status(400).json({ error: 'Invalid input' });
   }
-  console.log(password)
+  // console.log(password)
 
   const query = `SELECT * FROM users WHERE email = ?`;
   const user = await db.get(query , [email])
@@ -223,25 +273,50 @@ app.get("/events", async (request, response)=>{
 })
 
 //to approve the event by the admin 
-app.put("/approve-event:eventId", async (request, response) => {
+app.put("/approve-event/:eventId", async (request, response) => {
   const { eventId } = request.params; 
   const { status } = request.body;   
-
   if (!["approved", "pending"].includes(status)) {
     return response.status(400).json({ error: "Invalid status value" });
   }
-
   try {
 
-    const query = `UPDATE campusevent SET status = ? WHERE id = ?`;
+    let query = `UPDATE campusevent SET status = ? WHERE id = ?`;
     const params = [status, eventId];
-
     const result = await db.run(query, params);
+    
+    // if (result.changes === 0) {
+    //   return response.status(404).json({ error: "Event not found" });
+    // }
 
-    if (result.changes === 0) {
-      return response.status(404).json({ error: "Event not found" });
-    }
+    query = 'select email from users INNER JOIN campusevent on users.id = campusevent.user_id where campusevent.id = ?';
+    const email = await db.get(query, [eventId]) 
+    // console.log(email)
+    let mailOptions = {
+      from: "naveenjanapati65@gmail.com",
+      to: email.email,
+      subject: "Event Approved",
+      text: `Your Event is Approved. All the Best for your event`,
+    };
+    await transporter.sendMail(mailOptions)
 
+    query = 'select email from users'
+    const usersEmails = await db.all(query) 
+    const emailsList = usersEmails.map(user => user.email);
+    // console.log(emailsList)
+
+    const emailPromises = emailsList.map(email => {
+      let options = {
+        from: "naveenjanapati65@gmail.com",
+        to: email,
+        subject: "New Event Approved",
+        text: `A new event has been approved! Check it out.`,
+      };
+      return transporter.sendMail(options);
+    });
+
+    await Promise.all(emailPromises);
+    
     response.status(200).json({ message: "Approved the Event" });
     console.log(`Event with ID ${eventId} approved successfully.`);
   } catch (err) {
@@ -266,7 +341,6 @@ app.put("/reject-event/:eventId", async (request, response)=>{
     console.error("Error during Approve:", err.message);
     response.status(500).json({ error: "Internal server error" });
   }
-
 })
 
 // register for the event 
@@ -357,9 +431,9 @@ app.get("/organizer-events/:id", async (req, res) => {
 
     const events = await db.all("SELECT * FROM campusevent WHERE user_id = ?", [id]);
 
-    if (!events || events.length === 0) {
-      return res.status(404).json({ message: "No events found for this organizer" });
-    }
+    // if (!events || events.length === 0) {
+    //   return res.status(200).json({ message: "No events found for this organizer" });
+    // }
 
     res.json(events);
   } catch (error) {
@@ -391,4 +465,57 @@ app.post('/submit-feedback', async (request, response)=>{
     console.log("Internal Server error!", error)
     response.status(500).json({message : "Internal Server"})
   } 
+})
+
+//retieve feedbacks 
+app.get("/feedbacks", async(request, response)=>{
+  try{
+    let query ;
+    query = `select e.id as EventId, e.title as EventTitle, count() as NoOfRegistrations from campusevent as e 
+    LEFT JOIN EventRegistrations as er ON e.id = er.event_id  WHERE DATE(e.event_date) < DATE('now') group by e.id `
+
+    const registeredUsers = await db.all(query) ;
+    console.log(registeredUsers)
+    query = `select e.id as EventId, e.title as EventTitle,  count(f.id) as NoOfFeedbacks , 
+    SUM(CASE WHEN f.rating = 5 THEN 1 ELSE 0 END) as rating_5 , 
+    SUM(CASE WHEN f.rating = 4.5 THEN 1 ELSE 0 END)as rating_4_5,
+    SUM(CASE WHEN f.rating = 4 THEN 1 ELSE 0 END)as rating_4,
+    SUM(CASE WHEN f.rating = 3.5 THEN 1 ELSE 0 END)as rating_3_5,
+    SUM(CASE WHEN f.rating = 3 THEN 1 ELSE 0 END)as rating_3,
+    SUM(CASE WHEN f.rating = 2.5 THEN 1 ELSE 0 END)as rating_2_5, 
+    SUM(CASE WHEN f.rating = 2 THEN 1 ELSE 0 END)as rating_2,
+    SUM(CASE WHEN f.rating = 1.5 THEN 1 ELSE 0 END)as rating_1_5 ,
+    SUM(CASE WHEN f.rating = 1 THEN 1 ELSE 0 END)as rating_1,
+    SUM(CASE WHEN f.rating = 0.5 THEN 1 ELSE 0 END)as rating_0_5
+    from campusevent as e LEFT JOIN feedback as f ON e.id = f.event_id WHERE DATE(e.event_date) < DATE('now') group by e.id` 
+    console.log("heelo")
+    const feedstats = await db.all(query);
+    console.log(feedstats)
+    const event_stats = registeredUsers.map(eachEvent=>{
+      const feedbackData = feedstats.find(eachFeedback => eachEvent.EventId === eachFeedback.EventId) || {} ;
+      return {
+        event_id : eachEvent.EventId , 
+        event_title : eachEvent.EventTitle ,
+        registererd_users : eachEvent.NoOfRegistrations ,
+        total_feedbacks : feedbackData.NoOfFeedbacks , 
+        rating_5: feedbackData.rating_5 || 0,
+        rating_4_5: feedbackData.rating_4_5 || 0,
+        rating_4: feedbackData.rating_4 || 0,
+        rating_3_5: feedbackData.rating_3_5 || 0,
+        rating_3: feedbackData.rating_3 || 0,
+        rating_2_5: feedbackData.rating_2_5 || 0,
+        rating_2: feedbackData.rating_2 || 0,
+        rating_1_5: feedbackData.rating_1_5 || 0,
+        rating_1: feedbackData.rating_1 || 0,
+        rating_0_5 :feedbackData.rating_0_5 || 0 ,
+      }
+    })
+
+    response.status(200).json(event_stats);
+    console.log("completed Feedback Analysis Task...")
+  }
+  catch(error){
+    console.log("Error Occured try Again.")
+    response.status(500).json({message :"Internal Error"})
+  }
 })

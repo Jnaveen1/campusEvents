@@ -41,7 +41,6 @@ import './index.css'
     }
   };
 
-
   useEffect(() => {
     fetchEvents()
   }, []);

@@ -7,7 +7,7 @@ import FeedbackModal from '../FeedbackModal'
 
 const RegsiteredEvetns = (event) =>{
     const [events, setEvents] = useState([]) ;;
-    const [feedback , setFeedback] = useState(false);
+    const [openFeedback , setFeedback] = useState();
     const token = Cookies.get("jwtToken") ;
     const decodedToken = jwtDecode(token);
     const email = decodedToken.email ;
@@ -47,8 +47,8 @@ const RegsiteredEvetns = (event) =>{
                                     <p><strong>About : </strong>{event.description}</p>
                                     <p><strong>Location : </strong>{event.location}</p>
                                     <p className="text-gray-600"><strong>Date : </strong>{event.eventDate}</p>
-                                    { new Date(event.eventDate) <= new Date() ? <button type = "button" onClick = { ()=>setFeedback(true) }>Feedback</button> : <button>Get Ready</button>}
-                                    {feedback ? <FeedbackModal eventId={event.eventId} onClose={() => setFeedback(false)} /> : ''}
+                                    { new Date(event.eventDate) <= new Date() ? <button type = "button" onClick = { ()=>setFeedback(event.eventId) }>Feedback</button> : <button>Get Ready</button>}
+                                    {openFeedback === event.eventId ? <FeedbackModal eventId={event.eventId} onClose={() => setFeedback(false)} /> : ''}
                                 </li>
                             ))}
                         </ul>

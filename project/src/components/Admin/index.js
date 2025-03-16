@@ -81,7 +81,7 @@ import './index.css'
         headers : {"Content-Type" : "application/json"}, 
         body : JSON.stringify(detalis)
       }
-      const result = await fetch(`http://localhost:3000/approve-event-${eventId}`, options)
+      const result = await fetch(`http://localhost:3000/approve-event/${eventId}`, options)
       if(result.ok){
         const data =await result.json()
         await fetchEvents()

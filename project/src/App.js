@@ -8,8 +8,10 @@ import RegisteredEvents from './components/RegisteredEvents'
 import ProtectedRoute from './ProtectedRoute';
 import Admin from './components/Admin';
 import MyEvents from './components/MyEvents';
-import CompletedEvents from './components/FeedbackModal' ;
 import FeedbackModal from './components/FeedbackModal';
+import FeedbackAnalysis from './components/FeedbackAnalysis'
+import Forgetpassword from './components/Forgetpassword';
+import ResetPassword from './components/ResetPassword';
 function App() {
   return (
     <div className="App">
@@ -23,6 +25,9 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/myevents" element={<MyEvents />} />
             <Route path = "/feedback" element= {<FeedbackModal/>} />
+            <Route path = "/feedback-analysis" element= {<FeedbackAnalysis/>} />
+            <Route path = '/forget-password' element= {<Forgetpassword/>} />
+            <Route path = '/reset-link' element= {<ResetPassword/>} />
           </Routes>
         </Router>
     </div>

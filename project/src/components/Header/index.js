@@ -27,6 +27,10 @@ const Header = () =>{
         navigate("/myevents");
     }
 
+    const onClickAnalysis = () =>{
+        navigate("/feedback-analysis")
+    }
+
     return(
         <div className="header-container">
             <Link to = "/home"> 
@@ -42,6 +46,7 @@ const Header = () =>{
                 {(userRole === "admin" || userRole === "organizer") && (
                     <button type="button" onClick={onClickMyEvents}>My Events</button>
                 )}
+                {userRole === 'admin' && <button type = "button" onClick={onClickAnalysis}>Analysis</button>}
                 <button type="button" onClick={onClickLogout}>Logout</button>
             </div>
         </div>
