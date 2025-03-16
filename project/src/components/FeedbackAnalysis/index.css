@@ -25,3 +25,12 @@
     padding: 5px;
     text-align: left;
 }
+.analysis-filter-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    align-self: flex-start;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-top: 10px;
+}

@@ -1,13 +1,18 @@
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
+import { useState } from 'react'
 
 import { Link, useNavigate } from 'react-router-dom'
 import './index.css'
 
 const Header = () =>{
+    const [showDropdown, setShowDropdown] = useState(false);
     const token = Cookies.get("jwtToken") ;
     const decode = jwtDecode(token) ;
     const userRole = decode.role  ;
+    const userName = decode.username ;
+    const id = decode.id ;
+    console.log(id, userName, userRole)
     const navigate = useNavigate() 
 
     const onClickLogout = () =>{
@@ -47,7 +52,20 @@ const Header = () =>{
                     <button type="button" onClick={onClickMyEvents}>My Events</button>
                 )}
                 {userRole === 'admin' && <button type = "button" onClick={onClickAnalysis}>Analysis</button>}
-                <button type="button" onClick={onClickLogout}>Logout</button>
+                {/* <button type="button" onClick={onClickLogout}>Logout</button> */}
+                <div  onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
+                    <button className="profile-btn">
+                    <img src="/profile-icon.png" alt="Profile" className="profile-icon" />
+                    </button>
+                    {showDropdown && (
+                        <div className="dropdown-menu">
+                            <p>{userName}</p>
+                            <p>{userRole}</p>
+                            <button onClick={onClickLogout}>Logout</button>
+                        </div>
+                    )}
+                </div>
+                
             </div>
         </div>
 

@@ -76,7 +76,12 @@ const MyEvents = () => {
     <div className="main-container">
         <Header />
       <h2 className="heading">My Events</h2>
-      {events.length === 0 ? <p>No events found</p> : (
+      {events.length === 0 ? ( 
+        <div>
+          <img src = "https://tse4.mm.bing.net/th?id=OIP.MW_ImeGMdeW168RME4zuhwHaFE&pid=Api&P=0&h=180" />
+          <p className="para">No events found</p>
+          </div> 
+      ) : (
         <ul className="EventContainer">
           {events.map((event) => (
             <li key={event.id} className= {event.status == 'rejected' ? "reject-Event-Box" : "approved-Event-Box"} >

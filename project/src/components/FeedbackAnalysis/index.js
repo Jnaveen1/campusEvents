@@ -3,7 +3,7 @@ import Header from "../Header";
 import './index.css'
 const AdminAnalysis = () => {
   const [feedbacksStats, setFeedbacks] = useState([]);
-  const [filter , setFilter] = useState([]);
+  const [filterData , setFilterData] = useState([]);
  
   useEffect(() => {
     fetch("http://localhost:3000/feedbacks") // API to get all feedbacks
@@ -11,22 +11,30 @@ const AdminAnalysis = () => {
       .then((data) => {
         console.log(data);
         setFeedbacks(data);
+        setFilterData(data)
       })
       .catch((err) => console.error("Error fetching feedback:", err));
   }, []);
 
-  const handleEventAnalysisFilter = (event) =>{
-    console.log(event.target.value)
-  }
+  const handleEventAnalysisFilter = (event) => {
+    const searchValue = event.target.value.toLowerCase();
+  
+    const filteredData = feedbacksStats.filter((eachData) =>
+      eachData.event_title.toLowerCase().includes(searchValue)
+    );
+    setFilterData(filteredData)
+  
+    console.log(filteredData);
+  };
 
   return (
     <div>
         <Header />
       <h1 className="heading text-2xl font-bold mb-4">Feedback Analysis</h1>
       <ul className="feedback-main-container">
-        <input type = "text" onChange = {handleEventAnalysisFilter} />
-      {feedbacksStats.length === 0 ? <p>There is FeedBacks.</p> : (
-        feedbacksStats.map((eachEventFeedback)=>
+        <input className="analysis-filter-input" type = "text" onChange = {handleEventAnalysisFilter} placeholder = "Search Events"/>
+      {filterData.length === 0 ? <p>There is FeedBacks.</p> : (
+        filterData.map((eachEventFeedback)=>
          <div key={eachEventFeedback.event_id} className="event-feedback-con">
             <h2>{eachEventFeedback.event_title}</h2>
             <p><strong>Total Registered Users:</strong> {eachEventFeedback.registererd_users}</p>

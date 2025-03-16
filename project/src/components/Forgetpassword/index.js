@@ -8,6 +8,10 @@ const Forgetpassword = () =>{
     const handleSubmitForm = async (event) =>{
         event.preventDefault() 
         console.log(email)
+        if(email === undefined){
+            alert("Enter the Registered Email.")
+            return 
+        }
         console.log("Ok Submitted")
 
         try{
