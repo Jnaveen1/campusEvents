@@ -6,7 +6,7 @@ const AdminAnalysis = () => {
   const [filterData , setFilterData] = useState([]);
  
   useEffect(() => {
-    fetch("http://localhost:3000/feedbacks") // API to get all feedbacks
+    fetch("http://localhost:3000/feedbacks") 
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -37,6 +37,7 @@ const AdminAnalysis = () => {
         filterData.map((eachEventFeedback)=>
          <div key={eachEventFeedback.event_id} className="event-feedback-con">
             <h2>{eachEventFeedback.event_title}</h2>
+            <p><strong>OrganizerId</strong>: {eachEventFeedback.organizer_id}</p>
             <p><strong>Total Registered Users:</strong> {eachEventFeedback.registererd_users}</p>
             <p><strong>Total Feedback Given:</strong> {eachEventFeedback.total_feedbacks}</p>
             <table border = '1' className="event-feedback-table">

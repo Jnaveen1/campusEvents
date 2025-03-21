@@ -29,10 +29,11 @@
     padding: 20px;
     margin: 20px;
     text-align: left;
-    min-height: 200px;
+    min-height: 230px;
     max-height: 300px;
     border-radius: 20px;
     border-color: red;
+    text-decoration: none;
   }
 
   .approved-Event-Box{
@@ -42,13 +43,15 @@
     padding: 20px;
     margin: 20px;
     text-align: left;
-    min-height: 200px;
+    min-height: 250px;
     max-height: 300px;
     border-radius: 20px;
     border-color: green;
+    text-decoration: none;
   }
-  .para{
+  p{
     margin: 10px;
+    color: black;
   }
 
   .no-events-con{
@@ -58,4 +61,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+
+  .status{
+    text-align: right;
+    font-size: 10px;
+    font-weight: bold;
   }

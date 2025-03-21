@@ -12,6 +12,7 @@ import FeedbackModal from './components/FeedbackModal';
 import FeedbackAnalysis from './components/FeedbackAnalysis'
 import Forgetpassword from './components/Forgetpassword';
 import ResetPassword from './components/ResetPassword';
+import EventDetails from './components/EventDetails';
 function App() {
   return (
     <div className="App">
@@ -28,6 +29,7 @@ function App() {
             <Route path = "/feedback-analysis" element= {<FeedbackAnalysis/>} />
             <Route path = '/forget-password' element= {<Forgetpassword/>} />
             <Route path = '/reset-link' element= {<ResetPassword/>} />
+            <Route path = "/event-details/:id" element= {<EventDetails/>}  />
           </Routes>
         </Router>
     </div>

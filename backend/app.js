@@ -348,7 +348,7 @@ app.put("/reject-event/:eventId", async (request, response)=>{
 app.post("/register-event/:id", async (request, response) => {
   console.log("NANa")
   const { id } = request.params;
-    const { eventTitle, email, name, phoneNumber } = request.body;
+    const { eventTitle, email, name, phoneNumber, userId } = request.body;
   console.log("naveen1")
     try {
       console.log("naveen12")
@@ -366,11 +366,11 @@ app.post("/register-event/:id", async (request, response) => {
         }
 
         const insertQuery = `
-            INSERT INTO EventRegistrations (event_id, event_title, email, username, phone_number) 
-            VALUES ($1, $2, $3, $4, $5) RETURNING *;
+            INSERT INTO EventRegistrations (event_id, event_title, email, username, phone_number, user_id) 
+            VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
         `;
 
-        const result = await db.run(insertQuery, [id, eventTitle, email, name, phoneNumber]);
+        const result = await db.run(insertQuery, [id, eventTitle, email, name, phoneNumber, userId]);
 
         console.log("Registration saved:", result);
         response.json({ message: "Registration successful!", data: result });
@@ -472,9 +472,12 @@ app.post('/submit-feedback', async (request, response)=>{
 app.get("/feedbacks", async(request, response)=>{
   try{
     let query ;
-    query = `select e.id as EventId, e.title as EventTitle, count() as NoOfRegistrations from campusevent as e 
-    LEFT JOIN EventRegistrations as er ON e.id = er.event_id  WHERE DATE(e.event_date) < DATE('now') group by e.id `
-
+    query = `SELECT e.id AS EventId, e.title AS EventTitle, e.user_id as organizerId , COUNT(er.user_id) AS NoOfRegistrations
+            FROM campusevent AS e
+            LEFT JOIN EventRegistrations AS er ON e.id = er.event_id
+            WHERE DATE(e.event_date) < DATE('now')
+            GROUP BY e.id;
+            `
     const registeredUsers = await db.all(query) ;
     console.log(registeredUsers)
     query = `select e.id as EventId, e.title as EventTitle,  count(f.id) as NoOfFeedbacks , 
@@ -497,6 +500,7 @@ app.get("/feedbacks", async(request, response)=>{
       return {
         event_id : eachEvent.EventId , 
         event_title : eachEvent.EventTitle ,
+        organizer_id : eachEvent.organizerId, 
         registererd_users : eachEvent.NoOfRegistrations ,
         total_feedbacks : feedbackData.NoOfFeedbacks , 
         rating_5: feedbackData.rating_5 || 0,
@@ -518,5 +522,27 @@ app.get("/feedbacks", async(request, response)=>{
   catch(error){
     console.log("Error Occured try Again.")
     response.status(500).json({message :"Internal Error"})
+  }
+})
+
+
+//get details of particular event thriugh id of event
+app.get("/event-details/:id", async(request, response)=>{
+  const {id} = request.params ;
+  console.log(id)
+  try{
+    let query ;
+    query = `select * from campusevent where id = ?` ;
+    const event = await db.get(query, [id]) ;
+    console.log(event)
+    query = `select e.username, f.rating, f.comment from EventRegistrations as e LEFT JOIN feedback as f ON e.event_id = f.event_id  where e.event_id = ?` 
+    const registeredUsers = await db.all(query ,[id]) ;
+    if(registeredUsers !== undefined){
+      response.status(200).json({event : event , registeredUsers : registeredUsers})
+    }else{
+      response.status(200).json({message : 'No Events are Found'})
+    }
+  }catch(error){
+    response.status(500).json({message : "Internal Error.."}) ;
   }
 })

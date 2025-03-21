@@ -1,5 +1,5 @@
 import React, {useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import EventForm from '../EventForm';
 import Event from '../Event';
@@ -24,6 +24,7 @@ import './index.css'
   const [selectedEventId, setSelectedEvent] = useState(null); 
   const [selectedEventTitle, setSelectedEventTitle] = useState(null); 
   const [showModal, setShowModal] = useState(false); 
+  const location = useLocation() 
 
   const fetchEvents = async () => {
     try {
@@ -43,7 +44,7 @@ import './index.css'
 
   useEffect(() => {
     fetchEvents()
-  }, []);
+  }, [location]);
 
 
   const handleFilterChange = (event) => {

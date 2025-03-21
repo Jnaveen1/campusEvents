@@ -7,7 +7,7 @@ const Event = (props) => {
     const decode = jwtDecode(token)
     const userRole = decode.role 
     const { event, eventId, registerEvent, EventStatus } = props 
-    const { title, description, location, event_date, status } = event
+    const { title, description, location, event_date, status, user_id } = event
 
     const onclickEventRegister = () => {
         registerEvent(eventId, title) 
@@ -18,7 +18,7 @@ const Event = (props) => {
             <strong>Event Name :</strong> {title}<br/>
             <strong>Location : </strong>{location.toUpperCase()} on {event_date}<br/>
             <strong>Description :</strong> {description}<br/>
-
+            <strong>Organizer Id :</strong> {user_id}<br/>
             {userRole === 'admin' && (
                 <>
                     {status === 'pending' && (

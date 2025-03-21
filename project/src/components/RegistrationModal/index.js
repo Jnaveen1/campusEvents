@@ -15,6 +15,7 @@ const RegistrationModal = ({ eventId, eventTitle, onClose, onRegister }) => {
   const token = Cookies.get('jwtToken');
   const decodedToken = jwtDecode(token);
   const userEmail = decodedToken.email;
+  const userId = decodedToken.id ;
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -28,7 +29,8 @@ const RegistrationModal = ({ eventId, eventTitle, onClose, onRegister }) => {
     setIsSubmitting(true);
     try {
       formData['email'] = userEmail
-      formData['id'] = eventId
+      formData['id'] = eventId 
+      formData['userId'] = userId
       await onRegister(eventId, formData); 
       setConfirmation(true);
     } catch (error) {

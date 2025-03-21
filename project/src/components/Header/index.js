@@ -12,7 +12,6 @@ const Header = () =>{
     const userRole = decode.role  ;
     const userName = decode.username ;
     const id = decode.id ;
-    console.log(id, userName, userRole)
     const navigate = useNavigate() 
 
     const onClickLogout = () =>{
@@ -53,7 +52,7 @@ const Header = () =>{
                 )}
                 {userRole === 'admin' && <button type = "button" onClick={onClickAnalysis}>Analysis</button>}
                 {/* <button type="button" onClick={onClickLogout}>Logout</button> */}
-                <div  onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
+                <div onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
                     <button className="profile-btn">
                     <img src="/profile-icon.png" alt="Profile" className="profile-icon" />
                     </button>

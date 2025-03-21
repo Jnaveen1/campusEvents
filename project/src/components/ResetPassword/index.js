@@ -61,7 +61,7 @@ const ResetPassword = ()=>{
 
 
     return(
-        <div  className='reset-main-container'>
+        <div className='reset-main-container'>
             <form onSubmit={handleSubmitForm}  className='reset-container'>
                 <label>Password</label>
                 <input type = 'password' onChange={(e) => setPassword(e.target.value)} />
