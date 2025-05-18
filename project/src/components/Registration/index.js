@@ -158,7 +158,7 @@ const Registration = () => {
           </>
         )}
       </form>
-      <Link to='/login'>
+      <Link to='/login'  className='link'>
               <p>Already registered? Login</p>
       </Link>
       </div>

@@ -83,7 +83,7 @@ import './index.css'
       }
       const result = await fetch(`http://localhost:3000/approve-event/${eventId}`, options)
       if(result.ok){
-        const data =await result.json()
+        const data = await result.json() 
         await fetchEvents()
       }
   }
@@ -162,7 +162,7 @@ import './index.css'
               {eventDetails.filter(event => event.status === 'pending').length > 0 ? (
                 <ul>
                   {eventDetails
-                    .filter(event => event.status === 'pending')
+                    .filter(event => event.status === 'pending' && new Date(event.event_date) > new Date())
                     .map(event => (
                       <Event event={event} 
                             key={event.id} 

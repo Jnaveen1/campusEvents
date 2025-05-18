@@ -72,7 +72,7 @@ import './index.css'
     }
   };
 
-  const onRegister = async (id, data) => {
+  const onRegister = async (id, data ) => {
     try {
         const options = {
             method: "POST",

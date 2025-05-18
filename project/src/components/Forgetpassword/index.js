@@ -23,7 +23,11 @@ const Forgetpassword = () =>{
             body : JSON.stringify({Email : email})
         }
 
-        await fetch("http://localhost:3000/reset-link", options);
+        const response = await fetch("http://localhost:3000/reset-link", options);
+        if(response.ok){
+            alert("Link Sent to the Email") 
+            setEmail("")
+        }
         }
         catch(error){
             console.log(error.message)
@@ -35,7 +39,7 @@ const Forgetpassword = () =>{
             <div className='forget-container'>
                 <h2>Forgot Password?</h2>
                 <form onSubmit={handleSubmitForm}>
-                <input type="email" placeholder="Enter Email" onChange = {(e) => setEmail(e.target.value) } />
+                <input type="email" placeholder="Enter Email" value={email} onChange = {(e) => setEmail(e.target.value) } />
                 <button type="submit">Send Reset Link</button>
                 </form>
             </div>

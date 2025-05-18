@@ -38,12 +38,9 @@ const LoginForm = () => {
     };
     console.log(formData)
     try {
-        console.log("nana")
         const response = await fetch('http://localhost:3000/login', options);
         console.log(response)
-        console.log("jvn")
         if(response.ok){
-          console.log("naveen")
             const data = await response.json();
             console.log(data.token)
             Cookies.set("jwtToken", data.token)
@@ -93,10 +90,10 @@ const LoginForm = () => {
         <button type="submit" className='login-btn'>
           Login
         </button>
-        <Link to='/register'>
-        <p>Don't have Account?Register.</p>
-      </Link>
-      <Link to='/forget-password'>
+        <Link to='/register' className='link'>
+          <p>Don't have Account?Register.</p>
+        </Link>
+      <Link to='/forget-password' className='link'>
         <p>Forgot Password.</p>
       </Link>
       </form>

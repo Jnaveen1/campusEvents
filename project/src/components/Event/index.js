@@ -31,7 +31,7 @@ const Event = (props) => {
             )}
 
             {EventStatus === "YES" && (
-                <button onClick={onclickEventRegister} type="button">Register</button>
+                <button onClick={onclickEventRegister} type="button">🎟 Register</button>
             )}
         </li>
     )

@@ -13,8 +13,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: url('https://images.goklassifieds.com/2023/07/Vasireddy-Venkatadri-Institute-of-Technology-Cover.jpeg') no-repeat center center/cover;
+     width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+    background: url('https://www.shutterstock.com/image-illustration/yber-security-safety-information-personal-600nw-1832129089.jpg');
   }
   
   

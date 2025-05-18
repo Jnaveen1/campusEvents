@@ -6,3 +6,9 @@
 .register-form{
     margin-bottom: 10px;
 }
+
+.reset-style{
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3lZQ3l7-6Xgur2zTC0uXXNGLMrhdTPP0GIw&s");
+    height: 100vh;
+    width: 100%;
+}

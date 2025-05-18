@@ -18,7 +18,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: url('https://images.goklassifieds.com/2023/07/Vasireddy-Venkatadri-Institute-of-Technology-Cover.jpeg') no-repeat center center/cover;
+    background: url('https://media.licdn.com/dms/image/v2/C511BAQH6RxIzlpMSHA/company-background_10000/company-background_10000/0/1584487149190/vasireddy_venkatadri_institute_of_technology_nambur_v_pedakakani_m_pin_522508_cc_bq__cover?e=2147483647&v=beta&t=uY9CiEEkKgYVNeF7GehFgZZPO88y3WAB6EwLvgyPY18') no-repeat center center/cover;
   }
   
   
@@ -69,3 +69,6 @@
     transform: scale(0.95);
   }
   
+.link{
+  text-decoration: none;
+}
