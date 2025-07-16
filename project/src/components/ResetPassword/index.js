@@ -71,7 +71,6 @@ const ResetPassword = ()=>{
                 <p>{error}</p>
 
             </form>
-           
         </div>
     )
 }

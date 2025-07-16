@@ -44,27 +44,17 @@ const MyEvents = () => {
     if (!confirmDelete) return;
 
     try {
-      await fetch(`https://your-backend-api.com/events/${eventId}`, {
+      const response =  await fetch(`http://localhost:3000/delete-events/${eventId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setEvents(events.filter((event) => event.id !== eventId));
     } catch {
       alert("Failed to delete event");
     }
   };
 
-  const resubmitEvent = async (eventId) => {
-    try {
-      await fetch(`https://your-backend-api.com/events/${eventId}/resubmit`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      alert("Event resubmitted for approval");
-    } catch {
-      alert("Failed to resubmit event");
-    }
-  };
 
   const getEventDetails = (id, date)=>{
     console.log(id) 
@@ -87,7 +77,8 @@ const MyEvents = () => {
       ) : (
         <ul className="EventContainer">
           {events.map((event) => (
-              <li key={event.id} className= {event.status == 'rejected' ? "reject-Event-Box" : "approved-Event-Box"} onClick={()=>getEventDetails(event.id, event.event_date)} >
+              <li key={event.id} className= {event.status == 'rejected' ? "reject-Event-Box" : "approved-Event-Box"} 
+              onClick={ event.status == "approved" ?  ()=>getEventDetails(event.id, event.event_date) : null } >
                {new Date() > new Date(event.event_date) ? <p className="status">* completed</p> : <p className="status">* In progress</p> }
               <p><strong>Title: </strong>{event.title}</p>
               <p><strong>About: </strong>{event.description}</p>
@@ -110,4 +101,3 @@ const MyEvents = () => {
 };
 
 export default MyEvents;
-//<button onClick={() => resubmitEvent(event.id)}>Resubmit</button>
