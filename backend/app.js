@@ -346,18 +346,13 @@ app.put("/reject-event/:eventId", async (request, response)=>{
 
 // register for the event 
 app.post("/register-event/:id", async (request, response) => {
-  console.log("NANa")
   const { id } = request.params;
     const { eventTitle, email, name, phoneNumber, userId } = request.body;
-  console.log("naveen1")
     try {
-      console.log("naveen12")
-
       const checkQuery = `
             SELECT * FROM EventRegistrations 
             WHERE event_id = $1 AND email = $2;
         `;
-        console.log("hi")
         const checkResult = await db.get(checkQuery, [id, email]);
         
       console.log(checkResult)
@@ -526,7 +521,7 @@ app.get("/feedbacks", async(request, response)=>{
 })
 
 
-//get details of particular event thriugh id of event
+//get details of particular event through id of event
 app.get("/event-details/:id", async(request, response)=>{
   const {id} = request.params ;
   console.log(id)

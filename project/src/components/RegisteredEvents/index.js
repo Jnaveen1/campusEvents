@@ -6,7 +6,7 @@ import Header from '../Header';
 import FeedbackModal from '../FeedbackModal'
 
 const RegsiteredEvetns = (event) =>{
-    const [events, setEvents] = useState([]) ;;
+    const [events, setEvents] = useState([]) ;
     const [openFeedback , setFeedback] = useState();
     const token = Cookies.get("jwtToken") ;
     const decodedToken = jwtDecode(token);
